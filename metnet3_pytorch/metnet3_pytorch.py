@@ -367,6 +367,7 @@ class XCAttention(Module):
 
         self.norm = nn.LayerNorm(dim, elementwise_affine = not self.has_cond)
 
+        # 'qkv b h d n' 最后2个维度为 dim num_patches,这样在求自注意时的矩阵大小就为 (dim, dim), 和num_patches大小(图片大小)无关
         self.to_qkv = Sequential(
             nn.Linear(dim, dim_inner * 3, bias = False),
             Rearrange('b n (qkv h d) -> qkv b h d n', qkv = 3, h = heads)
@@ -403,6 +404,8 @@ class XCAttention(Module):
 
         # cosine sim linear attention
 
+        # 'qkv b h d n' 最后2个维度为 dim num_patches,这样在求自注意时的矩阵大小就为 (dim, dim), 和num_patches大小(图片大小)无关
+        # q,k,v: [b h d n]
         q, k, v = self.to_qkv(x)
 
         q, k = map(l2norm, (q, k))
@@ -923,7 +926,7 @@ class MetNet3(Module):
         batch = lead_times.shape[0]
 
         assert batch == hrrr_input_2496.shape[0] == input_2496.shape[0] == input_4996.shape[0], 'batch size across all inputs must be the same'
-        
+
         assert hrrr_input_2496.shape[1:] == self.hrrr_input_2496_shape
         assert input_2496.shape[1:] == self.input_2496_shape
         assert input_4996.shape[1:] == self.input_4996_shape
