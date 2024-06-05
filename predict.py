@@ -3,7 +3,6 @@ from metnet3_pytorch import MetNet3
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-device = "cpu"
 
 metnet3 = MetNet3(
     dim = 512,
