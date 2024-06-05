@@ -1,6 +1,6 @@
 import torch
 from metnet3_pytorch import MetNet3
-from torchsummary import summary
+
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 device = "cpu"
